@@ -1,1 +1,2 @@
-# reInvent2022DOP319
+# ReInvent2019CON310R
+Demo repo for CON310-R in ReInvent2019

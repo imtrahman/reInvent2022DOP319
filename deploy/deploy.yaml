@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reinvent2019con310r
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      app: reinvent2019con310r
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: reinvent2019con310r
+    spec:
+      containers:
+      - name: server
+        image: m00nf1sh/reinvent2019con310r:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MESSAGE
+          value: The Doctor
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 40"]
+      terminationGracePeriodSeconds: 70
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reinvent2019con310r
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: reinvent2019con310r
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reinvent2019con310r
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+spec:
+  ingressClassName: nginx-example
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              service:
+                Name: reinvent2019con310r
+                port: 
+                  number: 80
