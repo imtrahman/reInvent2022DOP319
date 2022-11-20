@@ -36,6 +36,8 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the docker images...
       - docker push $REPOSITORY_URI:$TAG
+      - aws sts get-caller-identity 
+      - aws sts assume-role --role-arn $EKS_KUBECTL_ROLE_ARN --role-session-name codebuild-kubectl --duration-seconds 900
       - aws eks update-kubeconfig --name "reinvent2022-east-2" --region "us-east-2"
       - cat ~/.kube/config
       - kubectl get nodes
