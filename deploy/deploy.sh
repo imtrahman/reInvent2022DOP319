@@ -6,4 +6,6 @@ do
         t) TAG=${OPTARG};;
     esac
 done
-cat ./nginx-deploy.yaml | sed "s;image: .*;image: $(REPOSITORY_URI):$(TAG);" | kubectl apply -f -
+#export $REPOSITORY_URI
+#export $TAG
+cat ./nginx-deploy.yaml | sed "s;image: .*;image: $REPOSITORY_URI:$TAG;" | kubectl apply -f -
