@@ -41,6 +41,7 @@ phases:
       - aws eks update-kubeconfig --name "reinvent2022-east-2" --region "us-east-2" --role-arn $EKS_KUBECTL_ROLE_ARN
       - cat ~/.kube/config
       - kubectl get nodes
+      - rm -rf ~/.aws/credentials
       - kubectl apply -f ./nginx-deploy.yaml
       - printf '[{"name":"nginx-deploy","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
