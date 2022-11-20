@@ -14,9 +14,10 @@ phases:
       - >
         sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/awscliv2 --update
       - export PATH="/usr/local/bin:$PATH"
-      - curl -LO https://storage.googleapis.com/kubernetes-release/release/1.22/bin/linux/amd64/kubectl
+      - curl -LO https://storage.googleapis.com/kubernetes-release/release/1.22.0/bin/linux/amd64/kubectl
       - chmod +x kubectl
       - mv ./kubectl /usr/local/bin/kubectl
+      - kubectl version --short
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
       - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' nginx-deploy.yaml
