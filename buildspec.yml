@@ -8,38 +8,32 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - export REPOSITORY_URI="public.ecr.aws/h5s4y9s3/reinvent2022dop319"
-      - aws --version
       - sudo mkdir /usr/local/awscliv2
       - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
       - unzip -q awscliv2.zip
       - >
         sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/awscliv2 --update
       - export PATH="/usr/local/bin:$PATH"
-#      - sudo ./aws/install
-      - aws --version
-      - which aws
       - curl -LO https://storage.googleapis.com/kubernetes-release/release/1.22/bin/linux/amd64/kubectl
       - chmod +x kubectl
       - mv ./kubectl /usr/local/bin/kubectl
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
+      - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' nginx-deploy.yaml
+      - export KUBECONFIG=$HOME/.kube/config
   build:
     commands:
       - echo Docker build and tagging started on `date`
-      - docker build -t $REPOSITORY_URI:latest -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker build --tag $REPOSITORY_URI:$TAG .
       - echo Docker build and tagging completed on `date`
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the docker images...
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Update the REPOSITORY_URI:IMAGE_TAG in K8S Manifest definition...
-        # - cat deploy/nginx-deploy.yaml | sed "s;image: .*;image: $(REPOSITORY_URI):$(IMAGE_TAG);" | kubectl apply -f -
-      - chmod +x deploy/deploy.sh
-      - deploy/deploy.sh -u $(REPOSITORY_URI) -t $(IMAGE_TAG)
+      - docker push $REPOSITORY_URI:$TAG
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+      - kubectl apply -f nginx-deploy.yaml
+      - printf '[{"name":"nginx-deploy","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files:
     - "appspec.yaml"
