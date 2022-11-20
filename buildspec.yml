@@ -24,8 +24,9 @@ phases:
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Update the REPOSITORY_URI:IMAGE_TAG in K8S Manifest definition...
-      - cat deploy/nginx-deploy.yaml | sed "s;image: .*;image: $(REPOSITORY_URI):$(IMAGE_TAG);" | kubectl apply -f -
-        
+        # - cat deploy/nginx-deploy.yaml | sed "s;image: .*;image: $(REPOSITORY_URI):$(IMAGE_TAG);" | kubectl apply -f -
+      - chmod +x deploy/deploy.sh
+      - deploy/deploy.sh -u $(REPOSITORY_URI) -t $(IMAGE_TAG)
 artifacts:
   files:
     - "appspec.yaml"
