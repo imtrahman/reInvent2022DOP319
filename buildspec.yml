@@ -18,7 +18,6 @@ phases:
       - chmod +x kubectl
       - mv ./kubectl /usr/local/bin/kubectl
       - sudo chmod +x /usr/local/bin/kubectl
-      - kubectl version --short
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - TAG="$REPOSITORY_NAME.$REPOSITORY_BRANCH.$ENVIRONMENT_NAME.$(date +%Y-%m-%d.%H.%M.%S).$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | head -c 8)"
       - sed -i 's@CONTAINER_IMAGE@'"$REPOSITORY_URI:$TAG"'@' nginx-deploy.yaml
@@ -33,7 +32,7 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the docker images...
       - docker push $REPOSITORY_URI:$TAG
-      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region "us-east-2"
       - kubectl apply -f nginx-deploy.yaml
       - printf '[{"name":"nginx-deploy","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
