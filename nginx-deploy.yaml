@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 1
       containers:
       - name: server
-        image: public.ecr.aws/h5s4y9s3/reinvent2022con319:v1.0
+        image: CONTAINER_IMAGE
         imagePullPolicy: Always
         ports:
         - containerPort: 80
