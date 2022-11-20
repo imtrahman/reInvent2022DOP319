@@ -1,2 +1,3 @@
-# reInvent2022DOP319
-Demo repo for DOP319 in ReInvent2022
+# Static webpage hosted on NGINX
+
+This is a static app, used for the demo purposes only.

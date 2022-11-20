@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reinvent2022dop319
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: reinvent2022dop319
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  template:
+    metadata:
+      labels:
+        app: reinvent2022dop319
+    spec:
+      containers:
+      - name: server
+        image: public.ecr.aws/h5s4y9s3/reinvent2022con319:v1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 40"]
+      terminationGracePeriodSeconds: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reinvent2022dop319
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: reinvent2022dop319
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: reinvent2022dop319
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: reinvent2022dop319
+                port: 
+                  number: 80
