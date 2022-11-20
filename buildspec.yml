@@ -21,11 +21,10 @@ phases:
       - curl -LO https://storage.googleapis.com/kubernetes-release/release/1.22/bin/linux/amd64/kubectl
       - chmod +x kubectl
       - mv ./kubectl /usr/local/bin/kubectl
-        #- aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-        #      - IMAGE_TAG=${COMMIT_HASH:=latest}
-        #      - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - IMAGE_TAG=1
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
       - echo Docker build and tagging started on `date`
