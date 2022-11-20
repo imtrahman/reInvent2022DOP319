@@ -18,7 +18,6 @@ phases:
 #      - sudo ./aws/install
       - aws --version
       - which aws
-      - /usr/local/bin/aws
       - curl -LO https://storage.googleapis.com/kubernetes-release/release/1.22/bin/linux/amd64/kubectl
       - chmod +x kubectl
       - mv ./kubectl /usr/local/bin/kubectl
