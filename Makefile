@@ -1,5 +1,6 @@
 TAG?=v1.0
-REGISTRY?=public.ecr.aws/h5s4y9s3/reinvent2022con319
+#REGISTRY?=public.ecr.aws/h5s4y9s3/reinvent2022con319
+REGISTRY?=public.ecr.aws/h5s4y9s3/reinvent2022dop319
 
 
 .PHONY: help
