@@ -51,5 +51,4 @@ phases:
       - printf '[{"name":"nginx-deploy","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files:
-    - "appspec.yaml"
-    - "taskdef.json"
+    - "build.json"
