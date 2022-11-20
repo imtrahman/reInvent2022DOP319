@@ -7,6 +7,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
+      - export REPOSITORY_URI="public.ecr.aws/h5s4y9s3/reinvent2022dop319"
       - aws --version
       - aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
@@ -22,14 +23,9 @@ phases:
       - echo Pushing the docker images...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Update the REPOSITORY_URI:IMAGE_TAG in task definition...
-      - echo Container image to be used $REPOSITORY_URI:$IMAGE_TAG
-      - sed -i 's@REPOSITORY_URI@'$REPOSITORY_URI'@g' taskdef.json
-      - sed -i 's@IMAGE_TAG@'$IMAGE_TAG'@g' taskdef.json
-      - echo update the REGION in task definition...
-      - sed -i 's@AWS_REGION@'$AWS_REGION'@g' taskdef.json
-      - echo update the roles in task definition...
-      - sed -i 's@TASK_EXECUTION_ARN@'$TASK_EXECUTION_ARN'@g' taskdef.json
+      - echo Update the REPOSITORY_URI:IMAGE_TAG in K8S Manifest definition...
+      - cat deploy/nginx-deploy.yaml | sed "s;image: .*;image: $(REPOSITORY_URI):$(IMAGE_TAG);" | kubectl apply -f -
+        
 artifacts:
   files:
     - "appspec.yaml"
