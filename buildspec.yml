@@ -9,7 +9,7 @@ phases:
       - echo Logging in to Amazon ECR...
       - export REPOSITORY_URI="public.ecr.aws/h5s4y9s3/reinvent2022dop319"
       - aws --version
-      - aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
