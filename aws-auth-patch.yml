@@ -5,6 +5,13 @@ data:
       username: build
       groups:
         - system:masters
+    - rolearn: arn:aws:iam::131804891577:role/reinvent-2022-dop319-cicd-CodeBuildServiceRole-1I83ZO5M5OD3M
+      username: reinvent-2022-dop319-cicd-CodeBuildServiceRole-1I83ZO5M5OD3M
+      groups:
+        - system:masters
+    - rolearn: arn:aws:iam:::role/EksWorkshopCodeBuildKubectlRole
+      username: build
+      groups:
     - groups:
       - system:bootstrappers
       - system:nodes
