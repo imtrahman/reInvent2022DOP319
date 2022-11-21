@@ -6,6 +6,7 @@
 GITHUB_USERNAME=imtrahman
 AWS_REGION=us-east-1
 
+TAG="$(date +%Y%m%d%H%M%S)$(git rev-parse HEAD | head -c 8)"
 export SERVICE_NAME=sample-lambda-function-template # This is for terraform provisioning 
 
 PROJECT_DIR="$(cd "$(dirname "$0")"; pwd)"
