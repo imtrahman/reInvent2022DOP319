@@ -1,6 +1,6 @@
 #REGISTRY?=public.ecr.aws/h5s4y9s3/reinvent2022con319
 REGISTRY?=public.ecr.aws/h5s4y9s3/reinvent2022dop319
-TAG?="latest"
+TAG?=latest
 
 .PHONY: help
 help: ## Display this help.
@@ -12,7 +12,7 @@ albcon: ## Install AWS ALB Controller
 
 .PHONY: docker-build
 docker-build:  ## Build Demo Application Container Image.
-#	docker build -t $(REGISTRY):$(TAG) .
+	docker build -t $(REGISTRY):$(TAG) .
 
 .PHONY: docker-push
 docker-push: docker-build ## ECR Login and Push Container Image to $(REGISTRY):$(TAG) .
@@ -62,6 +62,10 @@ zerodowntime: ## Upgrade Sample application with Zero Downtime.
 monitor: ## Monitor the deployed application by running `kubectl get pods`. 
 
 	watch -n 1 kubectl get pods
+
+.PHONY: locust
+locust: ## Run a locust test to simulate load and test the website 
+	~/.local/bin/locust -f /home/ec2-user/environment/locust/locustfile.py --host=http://`kubectl get ingress/reinvent2022dop319  -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'`
 
 .PHONY: getalb
 getalb: ## Show ALB controller running in the EKS cluster. 	
