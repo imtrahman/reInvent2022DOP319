@@ -66,3 +66,9 @@ spec:
                 name: reinvent2022dop319
                 port: 
                   number: 80
+          - path: /css/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: reinvent2022dop319
+                port: 
