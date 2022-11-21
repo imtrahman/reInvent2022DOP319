@@ -72,3 +72,4 @@ spec:
               service:
                 name: reinvent2022dop319
                 port: 
+                  number: 80
