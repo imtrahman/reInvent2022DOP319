@@ -51,7 +51,14 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: reinvent2022dop319
+                port: 
+                  number: 80
+          - path: /images/?(.*)
             pathType: Prefix
             backend:
               service:
