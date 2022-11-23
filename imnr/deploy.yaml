@@ -1,62 +1,65 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reinvent2022dop319
+  name: reinvent2019con310r
 spec:
-  replicas: 5
+  replicas: 8
   selector:
     matchLabels:
-      app: reinvent2022dop319
+      app: reinvent2019con310r
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 25%
-      maxSurge: 25%
+      maxSurge: 0
   template:
     metadata:
       labels:
-        app: reinvent2022dop319
+        app: reinvent2019con310r
     spec:
       containers:
       - name: server
-        image: public.ecr.aws/h5s4y9s3/reinvent2022dop319:v1.0
+        image: m00nf1sh/reinvent2019con310r:v1.0.0
         imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8080
+        env:
+        - name: MESSAGE
+          value: The Doctor
         lifecycle:
           preStop:
             exec:
               command: ["/bin/sh", "-c", "sleep 40"]
-      terminationGracePeriodSeconds: 80
+      terminationGracePeriodSeconds: 70
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: reinvent2022dop319
+  name: reinvent2019con310r
 spec:
   ports:
     - port: 80
-      targetPort: 80
+      targetPort: 8080
       protocol: TCP
   type: NodePort
   selector:
-    app: reinvent2022dop319
+    app: reinvent2019con310r
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: reinvent2022dop319
+  name: reinvent2019con310r
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
+  ingressClassName: nginx-example
   rules:
     - http:
         paths:
           - path: /
-            pathType: Prefix
             backend:
               service:
-                name: reinvent2022dop319
+                Name: reinvent2019con310r
                 port: 
                   number: 80
