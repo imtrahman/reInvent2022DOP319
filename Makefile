@@ -87,6 +87,11 @@ locust: ## Run a locust test to simulate load and test the website
 	@echo Locust using http://$(LOCUSTIP):8089
 	@~/.local/bin/locust -f /home/ec2-user/environment/locust/locustfile.py --host=http://`kubectl get ingress/reinvent2022dop319  -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'` > /dev/null 2>&1
 
+.PHONY: ep
+ep: ## Monitor the deployed application by running `kubectl get endpoints`. 
+
+	@watch -n 1 kubectl get ep 
+
 .PHONY: getalb
 getalb: ## Show ALB controller running in the EKS cluster. 	
 
