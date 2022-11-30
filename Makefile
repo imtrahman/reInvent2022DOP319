@@ -2,6 +2,7 @@
 
 REGISTRY?=public.ecr.aws/h5s4y9s3/reinvent2022dop319
 REVISION?=1
+OLDTAG?=20221129145806
 #TAG := $(shell echo `date +%Y%m%d%H%M%S``git rev-parse HEAD | head -c 8`)
 TAG := $(shell echo `date +%Y%m%d%H%M%S`)
 LOCUSTIP := $(shell aws ec2 describe-instances --filters Name=private-dns-name,Values=`hostname -f` --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
@@ -51,8 +52,8 @@ getingress: ## Get Deployed Ingress resource FQDN
 
 updateingress: ## Change Ingress Resource Target type from InstanceId to IP Address
 	
-	@echo TAG IS $(TAG)	
-	@cat deploy/deploy-nginx-ingress-target-ip.yaml | sed "s;image: .*;image: $(REGISTRY):$(TAG);" | kubectl apply -f -
+#	@echo TAG IS $(TAG)	
+	@cat deploy/deploy-nginx-ingress-target-ip.yaml | sed "s;image: .*;image: $(REGISTRY):$(OLDTAG);" | kubectl apply -f -
 
 .PHONY: upgradetargetip
 upgradetargetip: docker-build docker-push ## Upgrade APP with Ingress Resource Target type is IP Address
@@ -64,15 +65,15 @@ upgradetargetip: docker-build docker-push ## Upgrade APP with Ingress Resource T
 imagetag: ## list Puhsed image tags
 	@aws ecr-public describe-images --region us-east-1 --output json --repository-name reinvent2022dop319 --query 'sort_by(imageDetails,& imagePushedAt)[].imageTags' | jq . --raw-output
 
-.PHONY: deploy-fixed
-deploy-fixed:  ## Deploy Sample application with best Practice to ensure Zero Downtime.
+.PHONY: deployzerodowntime
+deployzerodowntime:  ## Deploy Sample application with best Practice to ensure Zero Downtime.
 
-	@echo TAG IS $(TAG)	
-	@cat deploy/nginx-fixed-deploy.yaml | sed "s;image: .*;image: $(REGISTRY):$(TAG);" | kubectl apply -f -
+	@echo TAG IS $(OLDTAG)	
+	@cat deploy/nginx-fixed-deploy.yaml | sed "s;image: .*;image: $(REGISTRY):$(OLDTAG);" | kubectl apply -f -
 #	kubectl apply -f deploy/nginx-fixed-deploy.yaml 
 
-.PHONY: zerodowntime 
-zerodowntime: docker-build docker-push ## Upgrade Sample application with Zero Downtime.
+.PHONY: upgradezerodowntime 
+upgradezerodowntime: docker-build docker-push ## Upgrade Sample application with Zero Downtime.
 
 	@echo TAG IS $(TAG)	
 	@cat deploy/nginx-fixed-deploy.yaml | sed "s;image: .*;image: $(REGISTRY):$(TAG);" | kubectl apply -f -

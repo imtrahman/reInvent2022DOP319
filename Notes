@@ -1,0 +1,5 @@
+Old Image : public.ecr.aws/h5s4y9s3/reinvent2022dop319:20221130032003
+
+Old TAG = 20221130032003
+
+alb.ingress.kubernetes.io/target-type: ip
