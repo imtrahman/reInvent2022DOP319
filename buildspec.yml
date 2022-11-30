@@ -47,8 +47,7 @@ phases:
       - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
         #      - aws eks update-kubeconfig --name "reinvent2022-east-2" --region "us-east-2"
       - kubectl get nodes
-        #- kubectl apply -f ./nginx-deploy.yaml
-      - kubectl apply -f ./zerodowntime-deploy.yaml
+      - kubectl apply -f ./nginx-deploy.yaml
       - printf '[{"name":"nginx-deploy","imageUri":"%s"}]' $REPOSITORY_URI:$TAG > build.json
 artifacts:
   files:
